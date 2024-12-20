@@ -1,0 +1,29 @@
+{
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "workbench.colorTheme": "Tinacious Design (High Contrast)",
+    "dart.openDevTools": "flutter",
+    "explorer.confirmDelete": false,
+    "dart.debugExternalPackageLibraries": true,
+    "dart.debugSdkLibraries": false,
+    "files.autoSave": "afterDelay",
+    "git.openRepositoryInParentFolders": "always",
+    "git.autofetch": true,
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "dart.previewFlutterUiGuides": true,
+    "editor.guides.indentation": true,
+    "workbench.colorCustomizations": {
+//   "editorIndentGuide.background": "#FF0000",  // تغيير لون الخط
+//   "editorIndentGuide.activeBackground": "#00FF00"  // تغيير لون الخط عند التركيز
+},
+"git.enableSmartCommit": true
+
+}
