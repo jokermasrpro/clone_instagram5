@@ -31,7 +31,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           appBarTheme: const AppBarTheme(backgroundColor: darkBackground),
           scaffoldBackgroundColor: Colors.black,
+          
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          
         ),
 
         home: StreamBuilder(

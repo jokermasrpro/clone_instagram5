@@ -1,4 +1,5 @@
 import 'package:clone_instagram/screens/auth_page/sign%20up/create_user.dart';
+import 'package:clone_instagram/screens/auth_page/sign%20up/phone_and_email.dart';
 import 'package:clone_instagram/shard/widgets/button_nav.dart';
 import 'package:clone_instagram/shard/widgets/theme/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -245,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => CreateUser()));
+                                builder: (_) => SignUpPage()));
                           },
                           child: Text(
                             'Sign Up.',

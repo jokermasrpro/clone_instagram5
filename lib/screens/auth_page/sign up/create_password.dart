@@ -1,10 +1,12 @@
 import 'package:clone_instagram/shard/widgets/theme/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'create_user.dart';
 
 class CreatePassword extends StatefulWidget {
   String email;
-   CreatePassword({super.key, required this.email});
+  CreatePassword({super.key, required this.email});
 
   @override
   State<CreatePassword> createState() => _CreatePasswordState();
@@ -12,8 +14,99 @@ class CreatePassword extends StatefulWidget {
 
 class _CreatePasswordState extends State<CreatePassword> {
   final userController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
   bool isChecked = false;
   bool passwordShow = true;
+  String? validPassowrd;
+
+  void checkPassword(value) {
+    RegExp regex = RegExp(r'^(?=.*[a-z])(?=.*\d).{8,}$');
+    if (value == null || value.isEmpty) {
+      setState(() {
+        validPassowrd = 'Please enter a password !!';
+      });
+    } else if (value.length < 8) {
+      setState(() {
+        validPassowrd = 'Password must be at least 8 characters !!';
+      });
+    } else if (!regex.hasMatch(value)) {
+      setState(() {
+        validPassowrd = 'Password must contain letters, numbers and symbols !!';
+      });
+    } else {
+      setState(() {
+        validPassowrd = null;
+      });
+      sginUpEmail();
+    }
+  }
+
+  Future<void> sginUpEmail() async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: widget.email, password: userController.text);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.amber,
+            alignment: Alignment.center,
+            actions: [
+              Column(
+                children: [
+                  Container(
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.close),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black),
+                    child: Text(
+                      "Your Email: ${widget.email} \n Your Password: ${userController.text}",
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Container(
+              child: Text("${e.code}"),
+            ),
+          ),
+        );
+      } else if (e.code == 'email-already-in-use') {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => CreateUser()));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Container(
+              child: Text("${e.code}"),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Container(
+            child: Text('$e'),
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +140,7 @@ class _CreatePasswordState extends State<CreatePassword> {
               Column(
                 children: [
                   Container(
+                    margin: EdgeInsets.only(bottom: 15),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: Color(0xff121212),
@@ -57,7 +151,11 @@ class _CreatePasswordState extends State<CreatePassword> {
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: "Password",
-                        hintStyle: TextStyle(color: Color(0xffA8A8A8)),
+                        hintStyle: TextStyle(
+                          color: validPassowrd == null
+                              ? Color(0xffA8A8A8)
+                              : const Color.fromARGB(255, 248, 18, 1),
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide: BorderSide(
@@ -68,10 +166,25 @@ class _CreatePasswordState extends State<CreatePassword> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide: BorderSide(
-                            color: Color(0xff2F2F2F),
+                            color: validPassowrd == null
+                                ? Color(0xff2F2F2F)
+                                : const Color.fromARGB(255, 248, 18, 1),
                             width: 1,
                           ),
                         ),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: validPassowrd == null ? false : true,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '$validPassowrd',
+                        style: TextStyle(
+                            color: Color(0xffff0000),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -98,7 +211,12 @@ class _CreatePasswordState extends State<CreatePassword> {
                                 });
                               }),
                         ),
-                        Text("Show Password?")
+                        Text(
+                          "Show Password?",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 70, 69, 69),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -111,7 +229,9 @@ class _CreatePasswordState extends State<CreatePassword> {
                             borderRadius: BorderRadius.circular(5))),
                         backgroundColor: WidgetStatePropertyAll(colorBlue),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        checkPassword(userController.text);
+                      },
                       child: Text(
                         "Next",
                         style: TextStyle(
