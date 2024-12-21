@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CreatePassword extends StatefulWidget {
-  const CreatePassword({super.key});
+  String email;
+   CreatePassword({super.key, required this.email});
 
   @override
   State<CreatePassword> createState() => _CreatePasswordState();
@@ -94,7 +95,6 @@ class _CreatePasswordState extends State<CreatePassword> {
                                       ? passwordShow = false
                                       : passwordShow = true;
                                   isChecked = value ?? false;
-                                 
                                 });
                               }),
                         ),

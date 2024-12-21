@@ -1,4 +1,5 @@
 import 'package:clone_instagram/screens/auth_page/login_screen.dart';
+import 'package:clone_instagram/screens/auth_page/sign%20up/create_password.dart';
 import 'package:clone_instagram/shard/widgets/theme/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,31 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  String? _verificationId;
   final userController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
+
   bool porgressShow = false;
   String signWith = 'Mobile Number';
   final emailOrPhone = FocusNode();
- 
+
+  String? msgErorr;
+
+  // Regular expression to validate email format
+  String? _validateEmail(String? email) {
+    // Regular expression for basic email validation
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    if (email == null || email.isEmpty) {
+      msgErorr = 'Email is required';
+    } else if (!emailRegex.hasMatch(email)) {
+      msgErorr = 'Please enter a valid email address';
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => CreatePassword(email: userController.text)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +84,7 @@ class _CreateUserState extends State<CreateUser> {
                   Column(
                     children: [
                       Container(
+                        margin: EdgeInsets.only(bottom: 15),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: Color(0xff121212)),
@@ -75,6 +95,11 @@ class _CreateUserState extends State<CreateUser> {
                               ? TextInputType.numberWithOptions()
                               : TextInputType.emailAddress,
                           style: TextStyle(color: Colors.white),
+                          onChanged: (value) {
+                            setState(() {
+                              msgErorr = null;
+                            });
+                          },
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                                 onPressed: () {
@@ -86,11 +111,16 @@ class _CreateUserState extends State<CreateUser> {
                                 )),
                             hintText:
                                 signWith != "email" ? "Mobile number" : "Email",
-                            hintStyle: TextStyle(color: Color(0xffA8A8A8)),
+                            hintStyle: TextStyle(
+                                color: msgErorr == null
+                                    ? Color(0xffA8A8A8)
+                                    : const Color.fromARGB(255, 249, 18, 1)),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide(
-                                color: Color(0xff2F2F2F),
+                                color: msgErorr == null
+                                    ? Color(0xff2F2F2F)
+                                    : const Color.fromARGB(255, 254, 17, 0),
                                 width: 1,
                               ),
                             ),
@@ -101,6 +131,19 @@ class _CreateUserState extends State<CreateUser> {
                                 width: 1,
                               ),
                             ),
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: msgErorr == null ? false : true,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            msgErorr ?? '',
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 255, 21, 4),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -116,24 +159,25 @@ class _CreateUserState extends State<CreateUser> {
                         backgroundColor: WidgetStatePropertyAll(colorBlue),
                       ),
                       onPressed: () {
-                        setState(() {
-                          porgressShow = true;
-                        });
-                       
+                        _validateEmail(userController.text);
                       },
-                      child: porgressShow
-                          ? CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeAlign: 0,
-                              strokeWidth: 3,
-                            )
-                          : Text(
-                              "Next",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
+                      child:
+                          //  porgressShow
+                          //     ? CircularProgressIndicator(
+                          //         color: Colors.white,
+                          //         strokeAlign: 0,
+                          //         strokeWidth: 3,
+                          //       )
+
+                          //     :
+
+                          Text(
+                        "Next",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
                     ),
                   ),
                   InkWell(

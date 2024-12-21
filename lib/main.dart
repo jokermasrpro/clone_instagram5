@@ -1,4 +1,3 @@
-import 'package:clone_instagram/screens/auth_page/sign%20up/create_user.dart';
 import 'package:clone_instagram/screens/provider.dart';
 import 'package:clone_instagram/screens/splash/splash_screen.dart';
 import 'package:clone_instagram/shard/widgets/theme/colors.dart';

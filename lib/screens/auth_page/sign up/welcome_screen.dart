@@ -31,15 +31,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       textAlign: TextAlign.center,
                       text: TextSpan(children: [
                         TextSpan(
-                            text:
-                                "welcome to Instagram\n You're welcome, newuser\n",
+                            text: "Save your login info?\n",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 28)),
                         TextSpan(
                             text:
-                                "\n email address and phone number on mainuser We will add it to newuser. Contact information andYou can change your username whenever you want.")
+                                "\n We`ll save the login info for your new account. so you won`t need to enter it next time you log in.")
                       ])),
                   Column(
                     children: [
